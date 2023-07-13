@@ -32,28 +32,11 @@ const app = express();
 
 app.use(express.json());
 
-// app.post("/teste", function (requisicao, resposta) {
-//     console.log(requisicao.body);
-//     resposta.send("Olá mundo");
-// });
 
 app.post("/login", function (requisicao, resposta) {
     const email = requisicao.body.email;
     const senha = requisicao.body.senha;
-    //usando for of
-    // let existeUsuario = false;
-    // for (const usuario of usuarios) {
-    //   if (usuario.email === email && usuario.senha === senha) {
-    //     existeUsuario = true;
-    //   }
-    // }
 
-    // usando o some
-    // const existeUsuario = usuarios.some(function (usuario) {
-    //   if(usuario.email === email && usuario.senha === senha) {
-    //     return true;
-    //   }
-    // });
 
     // usando o find
     const usuario = usuarios.find(function (usuario) {
@@ -63,31 +46,17 @@ app.post("/login", function (requisicao, resposta) {
     });
 
     if (usuario) {
+        const mensagensUsuario = messages.filter(function (message) {
+            return parseFloat(message.identificador) === usuario.identificador;
+        });
+
         resposta.status(200);
-        for (let message of messages) {
-            if (parseFloat(message.identificador) === usuario.identificador) {
-                resposta.json(messages)
-            }
-        }
-    } else {
+        resposta.json(mensagensUsuario);
+    }
+    else {
         resposta.status(400);
         resposta.send("usuário inválido");
     }
-
-    // usando o filter
-    // const usuariosEncontrados = usuarios.filter(function (usuario) {
-    //   if (usuario.email === email && usuario.senha === senha) {
-    //     return true;
-    //   }
-    // });
-
-    // if (usuariosEncontrados.length > 0) {
-    //   resposta.status(200);
-    //   resposta.send("usuario existe");
-    // } else {
-    //   resposta.status(400);
-    //   resposta.send("usuário inválido");
-    // }
 });
 
 app.post("/cadastro-de-usuario", function (requisicao, resposta) {
@@ -140,25 +109,41 @@ app.post("/escrever-recado", function (requisicao, resposta) {
 
 })
 
-// app.put("/editar-recado", function (requisicao, resposta) {
-//     const EditarRecado = {
-//         descricao: requisicao.body.descricao,
-//         corpo: requisicao.body.corpo,
-//         identificador: requisicao.body.identificador
+app.put("/editar-recado", function (requisicao, resposta) {
+    const editarRecado = {
+        descricao: requisicao.body.descricao,
+        corpo: requisicao.body.corpo,
+        identificador: requisicao.body.identificador
+    };
 
-//     }
-//     for (let message of messages) {
-//         if (EditarRecado.identificador === message.identificador) {
-//             message.descricao = EditarRecado.descricao
-//             message.corpo = EditarRecado.corpo
-//         }
-//         resposta.send(messages)
-//     }
+    for (let message of messages) {
+        if (editarRecado.identificador === message.identificador) {
+            message.descricao = editarRecado.descricao;
+            message.corpo = editarRecado.corpo;
+        }
+    }
 
-// })
+    resposta.send(messages);
+});
+
+app.delete("/deletar-recado/:identificador", function (requisicao, resposta) {
+    const identificador = requisicao.params.identificador;
+
+    const index = messages.findIndex(function (message) {
+        return message.identificador === identificador;
+    });
+
+    if (index !== -1) {
+        messages.splice(index, 1);
+        resposta.send(messages);
+    } else {
+        resposta.status(404).send("Recado não encontrado");
+    }
+});
 
 
-app.listen(3000, function () {
+
+app.listen(3000, () => {
     console.log("Aplicação está rodando na porta 3000: http://localhost:3000");
     console.log("ip local: http://:3000");
 });
