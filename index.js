@@ -87,6 +87,7 @@ app.post("/cadastro-de-usuario", function (requisicao, resposta) {
         resposta.status(400);
         resposta.send("Já existe um usário cadastrado com esse email");
     } else {
+        resposta.status(201)
         resposta.send("Usuário cadastrado com sucesso");
         usuarios.push(novoUsuario);
     }
@@ -104,6 +105,7 @@ app.post("/escrever-recado", function (requisicao, resposta) {
         identificador: requisicao.body.identificador
     }
     messages.push(novoRecado)
+    resposta.status(200)
     resposta.send(messages)
 
 
@@ -120,10 +122,14 @@ app.put("/editar-recado", function (requisicao, resposta) {
         if (editarRecado.identificador === message.identificador) {
             message.descricao = editarRecado.descricao;
             message.corpo = editarRecado.corpo;
+        } else {
+            console.log("Identificador inválido")
         }
+
     }
 
     resposta.send(messages);
+    resposta.status(200)
 });
 
 app.delete("/deletar-recado/:identificador", function (requisicao, resposta) {
@@ -136,6 +142,7 @@ app.delete("/deletar-recado/:identificador", function (requisicao, resposta) {
     if (index !== -1) {
         messages.splice(index, 1);
         resposta.send(messages);
+        console.log("Mensagem deletada com sucesso")
     } else {
         resposta.status(404).send("Recado não encontrado");
     }
