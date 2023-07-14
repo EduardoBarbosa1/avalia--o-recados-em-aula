@@ -105,7 +105,7 @@ app.post("/escrever-recado", function (requisicao, resposta) {
     }
     messages.push(novoRecado)
     resposta.send(messages)
-    resposta.send("Novo recado adicionado")
+
 
 })
 
