@@ -12,7 +12,7 @@ const usuarios = [
         nome: "Teste 1",
         identificador: 0,
         email: "teste1@teste.com",
-        senha: "teste1",
+        senha: "teste1"
     },
     {
         nome: "Teste 2",
