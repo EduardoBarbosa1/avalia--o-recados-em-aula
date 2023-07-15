@@ -10,13 +10,13 @@ import express from "express";
 const usuarios = [
     {
         nome: "Teste 1",
-        identificador: 0,
+        identificadorUser: 0,
         email: "teste1@teste.com",
         senha: "teste1"
     },
     {
         nome: "Teste 2",
-        identificador: 1,
+        identificadorUser: 1,
         email: "teste2@teste.com",
         senha: "teste2",
     },
@@ -24,10 +24,14 @@ const usuarios = [
 const messages = [{
     descricao: "Ola",
     corpo: "hello world",
-    identificador: "1"
+    identificadorUser: 1,
+    idMensagem: 1
+
 }]
 
-let contador = 2;
+let contador = usuarios.length;
+let idRecado = messages.length + 1
+
 const app = express();
 
 app.use(express.json());
@@ -44,10 +48,10 @@ app.post("/login", function (requisicao, resposta) {
             return true;
         }
     });
-
+    //função para filtrar mensagens já é embutida no login
     if (usuario) {
         const mensagensUsuario = messages.filter(function (message) {
-            return parseFloat(message.identificador) === usuario.identificador;
+            return parseFloat(message.identificadorUser) === usuario.identificadorUser;
         });
 
         resposta.status(200);
@@ -71,9 +75,10 @@ app.post("/cadastro-de-usuario", function (requisicao, resposta) {
     }
     const novoUsuario = {
         nome: requisicao.body.nome,
+        identificadorUser: contador,
         email: requisicao.body.email,
         senha: requisicao.body.senha,
-        identificador: contador,
+
     };
 
     let possuiMesmoEmail = false;
@@ -90,59 +95,73 @@ app.post("/cadastro-de-usuario", function (requisicao, resposta) {
         resposta.status(201)
         resposta.send("Usuário cadastrado com sucesso");
         usuarios.push(novoUsuario);
+        contador++;
     }
 
     console.log("possui mesmo", possuiMesmoEmail);
     console.log(usuarios);
-    // AQUI DENTRO VAI A REGRA PARA CADASTRAR USUÁRIOS
-    contador++;
+
+
 });
 
-app.post("/escrever-recado", function (requisicao, resposta) {
+app.post("/escrever-recado/", function (requisicao, resposta) {
     const novoRecado = {
         descricao: requisicao.body.descricao,
         corpo: requisicao.body.corpo,
-        identificador: requisicao.body.identificador
+        identificadorUser: requisicao.body.identificadorUser,
+        idMensagem: idRecado
     }
-    messages.push(novoRecado)
-    resposta.status(200)
-    resposta.send(messages)
 
+    const usuarioExistente = usuarios.find(function (usuario) {
+        return usuario.identificadorUser === novoRecado.identificadorUser;
+    });
 
-})
+    if (usuarioExistente) {
+        messages.push(novoRecado);
+        idRecado++;
+
+        resposta.status(200);
+        resposta.send(messages);
+    } else {
+        resposta.status(404);
+        resposta.send("Usuário não encontrado");
+    }
+});
+
 
 app.put("/editar-recado", function (requisicao, resposta) {
     const editarRecado = {
         descricao: requisicao.body.descricao,
         corpo: requisicao.body.corpo,
-        identificador: requisicao.body.identificador
+        identificadorUser: requisicao.body.identificadorUser,
+        idMensagem: requisicao.body.idMensagem
     };
 
     for (let message of messages) {
-        if (editarRecado.identificador === message.identificador) {
+        if (editarRecado.identificadorUser === message.identificadorUser && editarRecado.idMensagem === message.idMensagem) {
             message.descricao = editarRecado.descricao;
             message.corpo = editarRecado.corpo;
         } else {
-            console.log("Identificador inválido")
+            console.log("Identificador ou usuário inválido")
         }
-
     }
 
     resposta.send(messages);
     resposta.status(200)
 });
 
-app.delete("/deletar-recado/:identificador", function (requisicao, resposta) {
-    const identificador = requisicao.params.identificador;
+app.delete("/deletar-recado/:identificadorUser/:idMensagem", function (requisicao, resposta) {
+    const identificadorUser = parseInt(requisicao.params.identificadorUser);
+    const idMensagem = parseInt(requisicao.params.idMensagem);
 
     const index = messages.findIndex(function (message) {
-        return message.identificador === identificador;
+        return message.identificadorUser === identificadorUser && message.idMensagem === idMensagem;
     });
 
     if (index !== -1) {
         messages.splice(index, 1);
         resposta.send(messages);
-        console.log("Mensagem deletada com sucesso")
+        console.log("Mensagem deletada com sucesso");
     } else {
         resposta.status(404).send("Recado não encontrado");
     }
@@ -154,3 +173,4 @@ app.listen(3000, () => {
     console.log("Aplicação está rodando na porta 3000: http://localhost:3000");
     console.log("ip local: http://:3000");
 });
+
