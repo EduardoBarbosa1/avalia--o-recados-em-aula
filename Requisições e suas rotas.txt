@@ -1,0 +1,23 @@
+Requisições e suas rotas 
+
+Essa aplicação está online no servidor 
+(https://api-recados-fjix.onrender.com)
+
+Cadastro 
+POST /cadastro-de-usuario
+body {nome, email e senha}
+
+Login
+POST /login
+body {email e senha}
+
+Criar recado
+POST /escrever-recado
+body {descricao, corpo e identificadorUsuario}
+
+Editar recado
+PUT /editar-cadastro
+body {descricao, corpo, identificadorUser e idMensagem}
+
+Excluir recado
+DELETE /deletar-recado/:identificadorUser/ :idMensagem
