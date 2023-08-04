@@ -1,5 +1,5 @@
 import express from "express";
-const cors = require("cors");
+import cors from "cors";
 /* lista de ususarios
    cada item é um objeto
    o objeto possui as seguintes propriedades
