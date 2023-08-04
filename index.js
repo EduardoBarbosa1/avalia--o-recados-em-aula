@@ -1,5 +1,9 @@
-import express from "express";
-import cors from "cors";
+const express = require("express");
+const cors = require("cors"); // Importe o módulo cors
+const app = express();
+const corsOptions = {
+    origin: ["https://api-recados-fjix.onrender.com"],
+};
 /* lista de ususarios
    cada item é um objeto
    o objeto possui as seguintes propriedades
@@ -33,10 +37,10 @@ const messages = [{
 let contador = usuarios.length;
 let idRecado = messages.length + 1
 
-const app = express();
+
 
 app.use(express.json());
-app.use(cors())
+app.use(cors(corsOptions));
 
 
 app.post("/login", function (requisicao, resposta) {
