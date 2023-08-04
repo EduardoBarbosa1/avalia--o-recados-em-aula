@@ -1,4 +1,5 @@
 import express from "express";
+const cors = require("cors");
 /* lista de ususarios
    cada item é um objeto
    o objeto possui as seguintes propriedades
@@ -35,6 +36,7 @@ let idRecado = messages.length + 1
 const app = express();
 
 app.use(express.json());
+app.use(cors())
 
 
 app.post("/login", function (requisicao, resposta) {
