@@ -1,5 +1,5 @@
-const express = require("express");
-const cors = require("cors"); // Importe o módulo cors
+import express from "express"
+import cors from "cors"// Importe o módulo cors
 const app = express();
 const corsOptions = {
     origin: ["https://api-recados-fjix.onrender.com"],
