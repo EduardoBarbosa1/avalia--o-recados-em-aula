@@ -1,7 +1,6 @@
 import express from "express"
-const cors = require('cors')// Importe o módulo cors
+import cors from 'cors'// Importe o módulo cors
 const app = express();
-app.use(cors())
 
 /* lista de ususarios
    cada item é um objeto
@@ -37,7 +36,7 @@ let contador = usuarios.length;
 let idRecado = messages.length + 1
 
 
-
+app.use(cors())
 app.use(express.json());
 
 
@@ -174,8 +173,8 @@ app.delete("/deletar-recado/:identificadorUser/:idMensagem", function (requisica
 
 
 
-app.listen(3000, () => {
-    console.log("Aplicação está rodando na porta 3000: http://localhost:3000");
-    console.log("ip local: http://:3000");
+const port = 3000;
+app.listen(port, () => {
+    console.log(`Servidor iniciado na porta ${port}`);
 });
 
