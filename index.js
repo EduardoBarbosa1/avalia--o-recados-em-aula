@@ -1,9 +1,8 @@
 import express from "express"
-import cors from "cors"// Importe o módulo cors
+const cors = require('cors')// Importe o módulo cors
 const app = express();
-const corsOptions = {
-    origin: ["https://api-recados-fjix.onrender.com"],
-};
+app.use(cors())
+
 /* lista de ususarios
    cada item é um objeto
    o objeto possui as seguintes propriedades
@@ -40,7 +39,7 @@ let idRecado = messages.length + 1
 
 
 app.use(express.json());
-app.use(cors(corsOptions));
+
 
 
 app.post("/login", function (requisicao, resposta) {
